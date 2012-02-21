@@ -8,7 +8,7 @@ Installation
 
 Place the files from the repository in their respective folders (or use spark).
 
-Edit the configuration file to your environment:
+Edit the configuration file:
 
 	/*
 	| -------------------------------------------------------------------
