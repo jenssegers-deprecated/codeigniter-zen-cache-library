@@ -25,8 +25,10 @@ Edit the configuration file:
 	$config['expires'] = 60;
 	$config['folder']  = 'zen/';
 
-The zen library uses CodeIgniter's caching adapters internally, so you are able to set adapter specific using that adapter's configuration file. (http://codeigniter.com/user_guide/libraries/caching.html)
+The Zen library uses CodeIgniter's caching adapters internally, so you are able to set adapter specific using that adapter's configuration file. (http://codeigniter.com/user_guide/libraries/caching.html)
 	
+When using the file cache adapter, the Zen library will use the folder config parameter as a subdirectory for CodeIgniter's current cache directory. It will also add a .zen file extension.
+
 Example
 -------
 
@@ -44,3 +46,5 @@ Example
 	
 	// remove all cache
 	$this->zen->clean();
+	
+** NOTE:** the clean functions are only available when using the file adapter!
