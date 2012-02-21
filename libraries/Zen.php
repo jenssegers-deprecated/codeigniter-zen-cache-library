@@ -171,7 +171,6 @@ class Zen {
             } else {
                 // delete all
                 $this->ci->load->helper('file');
-                echo $cache_path;
                 if (file_exists($cache_path)) {
                     delete_files($cache_path, TRUE);
                 }
@@ -203,7 +202,7 @@ class Monk {
      */
     public function __construct($class) {
         $ci = &get_instance();
-        $this->_zen_ = Zen::get_instance();
+        $this->_zen_ = &Zen::get_instance();
         $this->_class_ = $class;
         $this->_object_ = &$ci->{$class};
     }
