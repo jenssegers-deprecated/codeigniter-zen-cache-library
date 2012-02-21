@@ -47,4 +47,4 @@ Example
 	// remove all cache
 	$this->zen->clean();
 	
-__ NOTE: __ the clean functions are only available when using the file adapter!
+**NOTE:** the clean functions are only available when using the file adapter!
