@@ -32,10 +32,12 @@ class Zen {
     // default values
     public $expires = 60;
     public $adapter = 'file';
-    
-    // sub directory to store cached items (only for file adapter)
+
+    // only for file cache adapter
     private $folder = 'zen';
-    
+    private $extension = '.zen';
+
+    // internal vars
     private $default_expires;
     private $monks = array();
     private static $instance;
@@ -155,7 +157,7 @@ class Zen {
         
         // place in sub directory when using file adapter
         if ($this->adapter == 'file') {
-            $id = $this->folder . $id . '.zen';
+            $id = $this->folder . $id . $this->extension;
         }
         
         return $this->ci->cache->save($id, $data, $expires);
@@ -169,7 +171,7 @@ class Zen {
     public function get($id) {
         // place in sub directory when using file adapter
         if ($this->adapter == 'file') {
-            $id = $this->folder . $id . '.zen';
+            $id = $this->folder . $id . $this->extension;
         }
         
         return $this->ci->cache->get($id);
