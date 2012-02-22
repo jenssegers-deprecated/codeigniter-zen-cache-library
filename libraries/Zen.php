@@ -51,8 +51,19 @@ class Zen {
         }
         
         $this->default_expires = $this->expires;
-        $this->folder = rtrim($this->folder, '/') . '/';
         $this->ci = &get_instance();
+        
+        // check if sub directory exists
+        if ($this->adapter == 'file' && $this->folder) {
+            $this->folder = rtrim($this->folder, '/') . '/';
+            
+            $cache_path = $this->ci->config->item('cache_path');
+            $cache_path = ($cache_path == '') ? APPPATH . 'cache/' . $this->folder : $cache_path . $this->folder;
+            
+            if (!empty($cache_path) && !file_exists($cache_path)) {
+                mkdir($cache_path);
+            }
+        }
         
         // load the original cache driver
         $this->ci->load->driver('cache', array('adapter' => $this->adapter));
@@ -145,7 +156,7 @@ class Zen {
     
     /**
      * Delete all or a group of cached items
-     * NOTE: only supported for file caching!
+     * NOTE: group cleaning is only supported for file caching!
      * 
      * @param string $group
      */
@@ -165,7 +176,7 @@ class Zen {
                 $map = directory_map($cache_path, TRUE);
                 foreach ($map as $file) {
                     if (strpos($file, $group) !== FALSE) {
-                        unlink($cache_path . $file);
+                        @unlink($cache_path . $file);
                     }
                 }
             } else {
@@ -177,6 +188,8 @@ class Zen {
             }
             
             return TRUE;
+        } else if (!$group) {
+            return $this->ci->cache->clean();
         }
         
         return FALSE;
