@@ -41,6 +41,9 @@ Example
 	// cached with custom expire time in seconds
 	$this->zen->expires(120)->blog_model->get_all();
 	
+	// cache a regular function
+	$replaced = $this->zen->preg_replace($pattern, $replacement, $subject);
+	
 	// remove all cache related to blog_model
 	$this->zen->clean('blog_model');
 	

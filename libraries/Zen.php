@@ -86,6 +86,27 @@ class Zen {
     }
     
     /**
+     * Magic function that caches all helper function calls
+     * 
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($method, $args = array()) {
+        $id = $method . '.' . hash('sha1', $method . serialize($args));
+        
+        if (!$call = $this->get($id)) {
+            $call = call_user_func_array($method, $args);
+            $this->save($id, $call);
+        }
+        
+        // reset expire time to default value
+        $this->expires(FALSE);
+        
+        return $call;
+    }
+    
+    /**
      * Set the cache expire time in seconds for the next call
      * 
      * @param int $ttl
