@@ -88,18 +88,29 @@ class Zen {
     }
     
     /**
-     * Magic function that caches all helper function calls
+     * Magic function that caches all controller method or helper function calls
      * 
      * @param string $method
      * @param array $args
      * @return mixed
      */
     public function __call($method, $args = array()) {
-        $id = $method . '.' . hash('sha1', $method . serialize($args));
-        
-        if ($call = $this->get($id) !== FALSE) {
-            $call = call_user_func_array($method, $args);
-            $this->save($id, $call);
+        if(method_exists($this->ci, $method)) {
+            // object method
+            $id = $this->ci->router->class . '.' . hash('sha1', $method . serialize($args));
+            
+            if (($call = $this->get($id)) === FALSE) {
+                $call = call_user_func_array(array($this->ci, $method), $args);
+                $this->save($id, $call);
+            }
+        } else {
+            // helper function
+            $id = $method . '.' . hash('sha1', serialize($args));
+            
+            if (($call = $this->get($id)) === FALSE) {
+                $call = call_user_func_array($method, $args);
+                $this->save($id, $call);
+            }
         }
         
         // reset expire time to default value
@@ -251,7 +262,7 @@ class Monk {
     public function __get($name) {
         $id = $this->_class_ . '.' . hash('sha1', $name);
         
-        if ($call = $this->_zen_->get($id) !== FALSE) {
+        if (($call = $this->_zen_->get($id)) === FALSE) {
             $result = $this->_object_->{$name};
             $this->_zen_->save($id, $result);
         }
@@ -272,7 +283,7 @@ class Monk {
     public function __call($method, $args = array()) {
         $id = $this->_class_ . '.' . hash('sha1', $method . serialize($args));
         
-        if ($call = $this->_zen_->get($id) !== FALSE) {
+        if (($call = $this->_zen_->get($id)) === FALSE) {
             $call = call_user_func_array(array($this->_object_, $method), $args);
             $this->_zen_->save($id, $call);
         }
