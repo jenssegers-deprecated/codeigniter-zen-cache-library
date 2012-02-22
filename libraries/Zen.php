@@ -76,7 +76,7 @@ class Zen {
      * all attributes and function calls that are made on it
      * 
      * @param string $name
-     * @return Zen
+     * @return Monk
      */
     public function __get($name) {
         // create a new imitating monk object when needed
