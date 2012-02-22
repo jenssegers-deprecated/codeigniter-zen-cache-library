@@ -18,12 +18,13 @@ Edit the configuration file:
 	|
 	| 'adapter'	= the cache adapter you want the system to use (apc, file, memcached, dummy)
 	| 'expires'	= the default time an item should remain in cache
-	| 'folder'	= the sub directory to store cached items in, relative from default cache folder
+	| 'folder'	= when using the file adapter you can choose to store the items in a sub 
+	|             directory of CodeIgniter's cache folder
 	*/
 
 	$config['adapter'] = 'file';
 	$config['expires'] = 60;
-	$config['folder']  = 'zen/';
+	$config['folder']  = 'zen';
 
 The Zen library uses CodeIgniter's caching adapters internally, so you are able to set adapter specific using that adapter's configuration file. (http://codeigniter.com/user_guide/libraries/caching.html)
 	
