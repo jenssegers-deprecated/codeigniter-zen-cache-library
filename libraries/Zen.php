@@ -32,11 +32,11 @@ class Zen {
     // default values
     public $expires = 60;
     public $adapter = 'file';
-
+    
     // only for file cache adapter
     private $folder = 'zen';
     private $extension = '.zen';
-
+    
     // internal vars
     private $default_expires;
     private $monks = array();
@@ -97,7 +97,7 @@ class Zen {
     public function __call($method, $args = array()) {
         $id = $method . '.' . hash('sha1', $method . serialize($args));
         
-        if (!$call = $this->get($id)) {
+        if ($call = $this->get($id) !== FALSE) {
             $call = call_user_func_array($method, $args);
             $this->save($id, $call);
         }
@@ -251,7 +251,7 @@ class Monk {
     public function __get($name) {
         $id = $this->_class_ . '.' . hash('sha1', $name);
         
-        if (!$call = $this->_zen_->get($id)) {
+        if ($call = $this->_zen_->get($id) !== FALSE) {
             $result = $this->_object_->{$name};
             $this->_zen_->save($id, $result);
         }
@@ -272,7 +272,7 @@ class Monk {
     public function __call($method, $args = array()) {
         $id = $this->_class_ . '.' . hash('sha1', $method . serialize($args));
         
-        if (!$call = $this->_zen_->get($id)) {
+        if ($call = $this->_zen_->get($id) !== FALSE) {
             $call = call_user_func_array(array($this->_object_, $method), $args);
             $this->_zen_->save($id, $call);
         }
