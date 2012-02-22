@@ -1,9 +1,9 @@
 CodeIgniter Zen Cache Library
 =============================
 
-A caching library to cache attributes or function calls to libraries and models. This library was built to be as user-friendly as possible. You can add zen caching to existing code by adding a zen chain-link before your actual library or model.
+A caching library to cache attributes or function calls to libraries, models and (helper) functions. This library was built to be as user-friendly as possible. You can add zen caching to existing code by adding a zen chain-link before your actual library or model: `$this->blog_model` becomes `$this->zen->blog_model`.
 
-Keep in mind, when using the file adapter for caching: writing caches files on the system takes time too. Only apply caching on those really big methods that slow your website down. Using memcached on the other hand may improve every call since those results remain in the system's memory.
+Keep in mind, when using the file adapter for caching: writing cache files on the system takes time too. Only apply caching on those really big methods that slow your website down. Using memcached on the other hand may improve every call since those results remain in the system's memory.
 
 Installation
 ------------
