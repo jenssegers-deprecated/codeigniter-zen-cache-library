@@ -68,7 +68,7 @@ class Zen {
         }
         
         // load the original cache driver
-        $this->ci->load->driver('cache', array('adapter' => $this->adapter, 'backup' => 'file'));
+        $this->ci->load->driver('cache', array('adapter' => $this->adapter));
     }
     
     /**
