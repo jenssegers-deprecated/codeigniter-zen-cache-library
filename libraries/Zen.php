@@ -3,7 +3,7 @@
  * @name		CodeIgniter Zen Cache Library
  * @author		Jens Segers
  * @link		http://www.jenssegers.be
- * @license		MIT License Copyright (c) 2011 Jens Segers
+ * @license		MIT License Copyright (c) 2012 Jens Segers
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ class Zen {
         }
         
         // load the original cache driver
-        $this->ci->load->driver('cache', array('adapter' => $this->adapter));
+        $this->ci->load->driver('cache', array('adapter' => $this->adapter, 'backup' => 'file'));
     }
     
     /**
@@ -95,7 +95,7 @@ class Zen {
      * @return mixed
      */
     public function __call($method, $args = array()) {
-        if(method_exists($this->ci, $method)) {
+        if (method_exists($this->ci, $method)) {
             // object method
             $id = $this->ci->router->class . '.' . hash('sha1', $method . serialize($args));
             
