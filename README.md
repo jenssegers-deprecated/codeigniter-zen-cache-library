@@ -54,5 +54,8 @@ Example
     
     // remove all cache
     $this->zen->clean();
+	
+	// using secret call() method just like call_user_func()
+	$this->zen->call(array($this->my_library, 'long_method'), $args = array());
     
 **NOTE:** the group clean functions are only available when using the file adapter!
