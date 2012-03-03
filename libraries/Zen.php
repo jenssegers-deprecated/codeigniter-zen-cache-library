@@ -264,7 +264,7 @@ class Monk {
      * @param string $name
      */
     public function __get($name) {
-        $id = strtolower($this->_object_) . '.' . hash('sha1', $name);
+        $id = strtolower(get_class($this->_object_)) . '.' . hash('sha1', $name);
         
         if (($call = $this->_zen_->get($id)) === FALSE) {
             $result = $this->_object_->{$name};
