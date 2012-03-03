@@ -81,7 +81,7 @@ class Zen {
     public function __get($name) {
         // create a new imitating monk object when needed
         if (!isset($this->monks[$name])) {
-            $this->monks[$name] = new Monk($name);
+            $this->monks[$name] = new Monk($this->ci->{$name});
         }
         
         return $this->monks[$name];
@@ -96,21 +96,29 @@ class Zen {
      */
     public function __call($method, $args = array()) {
         if (method_exists($this->ci, $method)) {
-            // object method
-            $id = $this->ci->router->class . '.' . hash('sha1', $method . serialize($args));
-            
-            if (($call = $this->get($id)) === FALSE) {
-                $call = call_user_func_array(array($this->ci, $method), $args);
-                $this->save($id, $call);
-            }
+            return $this->call(array($this->ci, $method), $args);
         } else {
-            // helper function
-            $id = $method . '.' . hash('sha1', serialize($args));
-            
-            if (($call = $this->get($id)) === FALSE) {
-                $call = call_user_func_array($method, $args);
-                $this->save($id, $call);
-            }
+            return $this->call($method, $args);
+        }
+    }
+    
+    /**
+     * The wrapper around 'call_user_func_array' with cached return
+	 *
+     * @param mixed $callback
+     * @param array $args
+     * @return mixed
+     */
+    public function call($callback, $args = array()) {
+        if(is_array($callback)) {
+            $id = strtolower(get_class($callback[0])) . '.' . hash('sha1', $callback[1] . serialize($args));
+        } else {
+            $id = strtolower($callback) . '.' . hash('sha1', serialize($args));
+        }
+        
+        if (($call = $this->get($id)) === FALSE) {
+            $call = call_user_func_array($callback, $args);
+            $this->save($id, $call);
         }
         
         // reset expire time to default value
@@ -233,9 +241,6 @@ class Zen {
 
 class Monk {
     
-    // name of class that we are imitating
-    private $_class_;
-    
     // reference to the actual object we are imitating
     private $_object_;
     
@@ -247,11 +252,10 @@ class Monk {
      * 
      * @param string $class
      */
-    public function __construct($class) {
+    public function __construct(&$object) {
         $ci = &get_instance();
         $this->_zen_ = &Zen::get_instance();
-        $this->_class_ = $class;
-        $this->_object_ = &$ci->{$class};
+        $this->_object_ = &$object;
     }
     
     /**
@@ -260,7 +264,7 @@ class Monk {
      * @param string $name
      */
     public function __get($name) {
-        $id = $this->_class_ . '.' . hash('sha1', $name);
+        $id = strtolower($this->_object_) . '.' . hash('sha1', $name);
         
         if (($call = $this->_zen_->get($id)) === FALSE) {
             $result = $this->_object_->{$name};
@@ -281,16 +285,6 @@ class Monk {
      * @return mixed
      */
     public function __call($method, $args = array()) {
-        $id = $this->_class_ . '.' . hash('sha1', $method . serialize($args));
-        
-        if (($call = $this->_zen_->get($id)) === FALSE) {
-            $call = call_user_func_array(array($this->_object_, $method), $args);
-            $this->_zen_->save($id, $call);
-        }
-        
-        // reset expire time to default value
-        $this->_zen_->expires(FALSE);
-        
-        return $call;
+        return $this->_zen_->call(array($this->_object_, $method), $args);
     }
 }
